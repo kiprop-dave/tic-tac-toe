@@ -21,6 +21,7 @@ export type settings = {
   player1?: string;
   player2?: string;
   against?: string;
+  quit?: () => void;
 };
 
 function App() {
@@ -36,11 +37,13 @@ function App() {
     setGameReady(true);
   }
 
+  const quit = () => setGameReady(false);
+
   return (
     <>
       <Page>
         {gameReady ? (
-          <PLayGame {...gameSettings} />
+          <PLayGame {...gameSettings} quit={quit} />
         ) : (
           <GameOptions start={startGame} />
         )}

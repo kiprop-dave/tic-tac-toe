@@ -84,18 +84,28 @@ export default function useGame({ player1, player2, against }: settings) {
   const oIcon = "/icons/O-icon.svg";
 
   // useEffect(() => {
+  //   console.log("outside effect");
   //   if (player1 === "O" && against === "CPU") {
-  //     cpuPlays(xIcon, "X");
+  //     let isCancelled = false;
+  //     if (!isCancelled) {
+  //       console.log("effect ran");
+  //       cpuPlays(xIcon, "X");
+  //     }
+  //     return () => {
+  //       isCancelled = true;
+  //     };
   //   }
-  // }, []);
+  // }, [gameStack.length]);
 
   // useEffect(() => {
   //   const timeout = setTimeout()
   // },[])
 
-  // useEffect(() => {
-  //   checkWinner();
-  // }, [gameMatrix]);
+  useEffect(() => {
+    if (!gameEnding.ended) {
+      checkWinner();
+    }
+  }, [gameStack.length]);
 
   function player1Plays(rowIndex: number, columnIndex: number): void {
     if (against === "CPU") {
@@ -170,49 +180,83 @@ export default function useGame({ player1, player2, against }: settings) {
     setMatrix(rowIndex, columnIndex, value, icon);
   }
 
+  function checkEmpty(r: number, c: number): boolean {
+    let isFilled = false;
+    if (gameMatrix[r][c].value.length > 0) {
+      isFilled = true;
+    }
+    return isFilled;
+  }
+
+  function checkEqual(r1: number, c1: number, r2: number, c2: number): boolean {
+    let isEqual = false;
+    if (gameMatrix[r1][c1].value === gameMatrix[r2][c2].value) {
+      isEqual = true;
+    }
+    return isEqual;
+  }
+
   function checkWinner() {
     const ended = gameMatrix.every((row) =>
       row.every((col) => col.value.length > 0),
     );
 
-    const winComb1 =
-      gameMatrix[0][0].value === gameMatrix[0][1].value &&
-      gameMatrix[0][1].value === gameMatrix[0][2].value;
-    const winComb2 =
-      gameMatrix[1][0].value === gameMatrix[1][1].value &&
-      gameMatrix[1][1].value === gameMatrix[1][2].value;
-    const winComb3 =
-      gameMatrix[2][0].value === gameMatrix[2][1].value &&
-      gameMatrix[2][1].value === gameMatrix[2][2].value;
-    const winComb4 =
-      gameMatrix[0][0].value === gameMatrix[1][0].value &&
-      gameMatrix[1][0].value === gameMatrix[2][0].value;
-    const winComb5 =
-      gameMatrix[0][1].value === gameMatrix[1][1].value &&
-      gameMatrix[1][1].value === gameMatrix[2][1].value;
-    const winComb6 =
-      gameMatrix[0][2].value === gameMatrix[1][2].value &&
-      gameMatrix[1][2].value === gameMatrix[2][2].value;
-    const winComb7 =
-      gameMatrix[0][0].value === gameMatrix[1][1].value &&
-      gameMatrix[1][1].value === gameMatrix[2][2].value;
-    const winComb8 =
-      gameMatrix[0][2].value === gameMatrix[1][1].value &&
-      gameMatrix[1][1].value === gameMatrix[2][0].value;
+    const rowOne = checkEmpty(0, 0) && checkEmpty(0, 1) && checkEmpty(0, 2);
+    const rowTwo = checkEmpty(1, 0) && checkEmpty(1, 1) && checkEmpty(1, 2);
+    const rowThree = checkEmpty(2, 0) && checkEmpty(2, 1) && checkEmpty(2, 2);
+    const column1 = checkEmpty(0, 0) && checkEmpty(1, 0) && checkEmpty(2, 0);
+    const columnTwo = checkEmpty(0, 1) && checkEmpty(1, 1) && checkEmpty(2, 1);
+    const columnThree =
+      checkEmpty(0, 2) && checkEmpty(1, 2) && checkEmpty(2, 2);
+    const diagonalOne =
+      checkEmpty(0, 0) && checkEmpty(1, 1) && checkEmpty(2, 2);
+    const diagonalTwo =
+      checkEmpty(0, 2) && checkEmpty(1, 1) && checkEmpty(2, 0);
 
-    if (
-      winComb1 ||
-      winComb2 ||
-      winComb3 ||
-      winComb4 ||
-      winComb5 ||
-      winComb6 ||
-      winComb7 ||
-      winComb8
-    ) {
-      console.log("game won");
+    const row1 = checkEqual(0, 0, 0, 1) && checkEqual(0, 1, 0, 2);
+    const row2 = checkEqual(1, 0, 1, 1) && checkEqual(1, 1, 1, 2);
+    const row3 = checkEqual(2, 0, 2, 1) && checkEqual(2, 1, 2, 2);
+    const col1 = checkEqual(0, 0, 1, 0) && checkEqual(1, 0, 2, 0);
+    const col2 = checkEqual(0, 1, 1, 1) && checkEqual(1, 1, 2, 1);
+    const col3 = checkEqual(0, 2, 1, 2) && checkEqual(1, 2, 2, 2);
+    const diag1 = checkEqual(0, 0, 1, 1) && checkEqual(1, 1, 2, 2);
+    const diag2 = checkEqual(0, 2, 1, 1) && checkEqual(1, 1, 2, 0);
+
+    const winComb =
+      (row1 && rowOne) ||
+      (row2 && rowTwo) ||
+      (row3 && rowThree) ||
+      (col1 && column1) ||
+      (col2 && columnTwo) ||
+      (col3 && columnThree) ||
+      (diag1 && diagonalOne) ||
+      (diag2 && diagonalTwo);
+
+    if (against === "HUMAN" && winComb && !gameEnding.ended) {
+      setGameEnding({
+        ended: true,
+        winner: gameStack[gameStack.length - 1].icon,
+      });
+    }
+
+    if (ended && !winComb) {
+      setGameEnding({
+        ended: true,
+        winner: null,
+      });
     }
   }
 
-  return { gameMatrix, player1Plays, undoLast, score };
+  function clearMatrix() {
+    setGameMatrix(matrix);
+    setGameEnding({
+      ended: false,
+      winner: null,
+    });
+    setGameStack([]);
+  }
+
+  // console.log(gameEnding);
+
+  return { gameMatrix, player1Plays, undoLast, score, gameEnding, clearMatrix };
 }
