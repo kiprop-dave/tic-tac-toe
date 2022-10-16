@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import styled from "styled-components";
 import { Context } from "../context/appContext";
-import { score } from "../hooks/useGame";
 const Container = styled.div`
   width: 100%;
   height: 4rem;

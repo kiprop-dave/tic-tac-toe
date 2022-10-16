@@ -1,6 +1,5 @@
 import { useState, useContext } from "react";
 import styled from "styled-components";
-import { players } from "../App";
 import { Context } from "../context/appContext";
 
 const Container = styled.div`

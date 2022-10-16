@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Header from "../components/header";
 import Score from "../components/score";
 import Row from "../components/row";
-import { settings } from "../App";
 import { Context } from "../context/appContext";
 import EndingNodal from "../components/endingNodal";
 
