@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styled from "styled-components";
 import { players } from "../App";
+import { Context } from "../context/appContext";
 
 const Container = styled.div`
   width: 30%;
@@ -77,41 +78,35 @@ const StartButton = styled.button`
   border: none;
 `;
 
-type optionsProps = {
-  start: (players: players, opp: string) => any;
-};
+function GameOptions() {
+  const appContext = useContext(Context);
+  if (!appContext) return null;
+  const { gameConfig, startGame, choosePlayer } = appContext;
 
-function GameOptions({ start }: optionsProps) {
   const [players, setPlayers] = useState({
     player1: "",
     player2: "",
   });
 
   function chooseX() {
-    setPlayers({
-      player1: "X",
-      player2: "O",
-    });
+    choosePlayer("X", "0");
   }
 
   function chooseO() {
-    setPlayers({
-      player1: "O",
-      player2: "X",
-    });
+    choosePlayer("O", "X");
   }
 
   function playAgainstCpu() {
-    if (players.player1.length > 0) {
+    if (gameConfig.player1.length > 0) {
       let opponent = "CPU";
-      start(players, opponent);
+      startGame(opponent);
     }
   }
 
   function playAgainstPlayer() {
-    if (players.player1.length > 0) {
+    if (gameConfig.player1.length > 0) {
       let opponent = "HUMAN";
-      start(players, opponent);
+      startGame(opponent);
     }
   }
 

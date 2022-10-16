@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import styled from "styled-components";
+import { Context } from "../context/appContext";
 
 const Container = styled.div`
   width: 100%;
@@ -53,11 +55,11 @@ const Redo = styled.div`
   cursor: pointer;
 `;
 
-type headerProps = {
-  undo: () => void;
-};
+function Header() {
+  const appContex = useContext(Context);
+  if (!appContex) return null;
+  const { undoLast } = appContex;
 
-function Header({ undo }: headerProps) {
   return (
     <>
       <Container>
@@ -70,7 +72,7 @@ function Header({ undo }: headerProps) {
           <h4 className="turn">TURN</h4>
         </Turn>
         <RedoContainer>
-          <Redo onClick={() => undo()}>
+          <Redo onClick={() => undoLast()}>
             <Icon src="/icons/redo-icon.svg" alt="undo last move" />
           </Redo>
         </RedoContainer>

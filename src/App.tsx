@@ -1,7 +1,8 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import GameOptions from "./pages/gameOptions";
 import PLayGame from "./pages/playGame";
+import { Context } from "./context/appContext";
 
 const Page = styled.div`
   display: flex;
@@ -25,6 +26,11 @@ export type settings = {
 };
 
 function App() {
+  const appContext = useContext(Context);
+  if (!appContext) return null;
+
+  const { gameStart } = appContext;
+
   const [gameReady, setGameReady] = useState(false);
   const [gameSettings, setGameSettings] = useState<settings>();
 
@@ -41,13 +47,7 @@ function App() {
 
   return (
     <>
-      <Page>
-        {gameReady ? (
-          <PLayGame {...gameSettings} quit={quit} />
-        ) : (
-          <GameOptions start={startGame} />
-        )}
-      </Page>
+      <Page>{gameStart ? <PLayGame /> : <GameOptions />}</Page>
     </>
   );
 }

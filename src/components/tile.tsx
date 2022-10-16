@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import styled from "styled-components";
+import { Context } from "../context/appContext";
 
 const Container = styled.div`
   width: 30%;
@@ -19,15 +21,21 @@ interface TileProps {
   icon: string;
   rowIndex: number;
   columnIndex: number;
-  play: (r: number, c: number) => void;
 }
 
-function Tile({ icon, rowIndex, columnIndex, play }: TileProps) {
+function Tile({ icon, rowIndex, columnIndex }: TileProps) {
+  const appContext = useContext(Context);
+  if (!appContext) return null;
+
+  const { player1Plays } = appContext;
+
   const hasPicked = icon.length > 0;
 
   return (
     <>
-      <Container onClick={() => !hasPicked && play(rowIndex, columnIndex)}>
+      <Container
+        onClick={() => !hasPicked && player1Plays(rowIndex, columnIndex)}
+      >
         {hasPicked && <Choice src={icon} alt="x or o" />}
       </Container>
     </>

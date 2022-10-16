@@ -1,4 +1,6 @@
+import { useContext } from "react";
 import styled from "styled-components";
+import { Context } from "../context/appContext";
 import { score } from "../hooks/useGame";
 const Container = styled.div`
   width: 100%;
@@ -29,21 +31,26 @@ const Number = styled.h3`
   color: #342c2c;
 `;
 
-function Score({ playerWins, ties, cpuWins }: score) {
+function Score() {
+  const appContext = useContext(Context);
+  if (!appContext) return null;
+
+  const { score } = appContext;
+
   return (
     <>
       <Container>
         <ScoreTally background="#6ec1f5">
           <Label>X(YOU)</Label>
-          <Number>{playerWins}</Number>
+          <Number>{score.playerWins}</Number>
         </ScoreTally>
         <ScoreTally background=" #f7f9f9">
           <Label>TIES</Label>
-          <Number>{ties}</Number>
+          <Number>{score.ties}</Number>
         </ScoreTally>
         <ScoreTally background="#ee9f0c">
           <Label>O(CPU)</Label>
-          <Number>{cpuWins}</Number>
+          <Number>{score.cpuWins}</Number>
         </ScoreTally>
       </Container>
     </>

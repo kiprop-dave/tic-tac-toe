@@ -4,7 +4,6 @@ import styled from "styled-components";
 type rowProps = {
   rowIndex: number;
   columns: column[];
-  play: (r: number, c: number) => void;
 };
 
 type column = {
@@ -19,8 +18,12 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   /* border: solid 1px yellow; */
+
+  @media screen and (max-width: 600px) {
+    height: 8rem;
+  }
 `;
-function Row({ columns, rowIndex, play }: rowProps) {
+function Row({ columns, rowIndex }: rowProps) {
   const columnElements = columns.map((col, index) => {
     return (
       <Tile
@@ -28,7 +31,6 @@ function Row({ columns, rowIndex, play }: rowProps) {
         icon={col.icon}
         rowIndex={rowIndex}
         columnIndex={index}
-        play={play}
       />
     );
   });
