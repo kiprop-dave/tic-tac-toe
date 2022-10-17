@@ -34,23 +34,27 @@ function Score() {
   const appContext = useContext(Context);
   if (!appContext) return null;
 
-  const { score } = appContext;
+  const { score, gameConfig } = appContext;
 
   return (
     <>
       <Container>
-        <ScoreTally background="#6ec1f5">
-          <Label>X(YOU)</Label>
-          <Number>{score.playerWins}</Number>
-        </ScoreTally>
-        <ScoreTally background=" #f7f9f9">
-          <Label>TIES</Label>
-          <Number>{score.ties}</Number>
-        </ScoreTally>
-        <ScoreTally background="#ee9f0c">
-          <Label>O(CPU)</Label>
-          <Number>{score.cpuWins}</Number>
-        </ScoreTally>
+        {gameConfig.against === "CPU" && (
+          <>
+            <ScoreTally background="#6ec1f5">
+              <Label>X(YOU)</Label>
+              <Number>{score.playerWins}</Number>
+            </ScoreTally>
+            <ScoreTally background=" #f7f9f9">
+              <Label>TIES</Label>
+              <Number>{score.ties}</Number>
+            </ScoreTally>
+            <ScoreTally background="#ee9f0c">
+              <Label>O(CPU)</Label>
+              <Number>{score.cpuWins}</Number>
+            </ScoreTally>
+          </>
+        )}
       </Container>
     </>
   );

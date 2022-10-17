@@ -58,6 +58,7 @@ function ContextProvider({ children }: contextProps) {
   //   }
   // };
   // const [score, setScore] = useState<score>(() => getLocalStorage());
+  // const stack = useLatest([]);
 
   const xIcon = "/icons/x-icon.svg";
   const oIcon = "/icons/O-icon.svg";
@@ -81,7 +82,7 @@ function ContextProvider({ children }: contextProps) {
   }, [gameConfig.against, justPlayed]);
 
   useEffect(() => {
-    if (!gameEnd) {
+    if (!gameEnd && gameStart) {
       checkWinner();
     }
   }, [gameStack.length]);
@@ -169,9 +170,9 @@ function ContextProvider({ children }: contextProps) {
       row.every((col) => col.value.length > 0),
     );
 
-    const alreadyWon = checkWinner();
+    const { winComb } = checkWinner();
 
-    if (!ended && !alreadyWon) {
+    if (!ended && !winComb) {
       while (gameMatrix[rowIndex][columnIndex].icon.length !== 0) {
         rowIndex = getRandomIndex(3).rowIndex;
         columnIndex = getRandomIndex(3).columnIndex;
@@ -189,8 +190,11 @@ function ContextProvider({ children }: contextProps) {
     //     setMatrix(bestRow, bestCol, value, icon);
     //   }
     // }
-    if (!alreadyWon) {
-      setMatrix(rowIndex, columnIndex, value, icon);
+    if (!winComb) {
+      // setMatrix(rowIndex, columnIndex, value, icon);
+      setTimeout(() => {
+        setMatrix(rowIndex, columnIndex, value, icon);
+      }, 500);
     }
   }
 
@@ -275,31 +279,13 @@ function ContextProvider({ children }: contextProps) {
     if (gameConfig.against === "CPU" && winComb && gameStack.length > 0) {
       setGameEnd(true);
       setWinner(gameStack[gameStack.length - 1].icon);
-      const winner = gameStack[gameStack.length - 1].value;
-      if (winner === gameConfig.player1) {
-        setScore((prev) => ({
-          ...prev,
-          playerWins: prev.playerWins + 1,
-        }));
-      } else if (winner === gameConfig.player2) {
-        setScore((prev) => ({
-          ...prev,
-          cpuWins: prev.cpuWins + 1,
-        }));
-      }
     }
 
     if (ended && !winComb && gameStack.length > 0) {
       setGameEnd(true);
       setWinner(null);
-      if (gameConfig.against === "CPU") {
-        setScore((prev) => ({
-          ...prev,
-          ties: prev.ties + 1,
-        }));
-      }
     }
-    return ended;
+    return { ended, winComb };
   }
 
   function clearMatrix() {

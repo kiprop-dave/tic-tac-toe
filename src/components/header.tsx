@@ -58,7 +58,7 @@ const Redo = styled.div`
 function Header() {
   const appContex = useContext(Context);
   if (!appContex) return null;
-  const { undoLast } = appContex;
+  const { undoLast, gameConfig } = appContex;
 
   return (
     <>
@@ -67,10 +67,12 @@ function Header() {
           <Icon src="/icons/x-icon.svg" alt="x" />
           <Icon src="/icons/O-icon.svg" alt="O" />
         </Logo>
-        <Turn>
-          <Icon src="/icons/x-icon.svg" alt="x or o" />
-          <h4 className="turn">TURN</h4>
-        </Turn>
+        {gameConfig.against === "HUMAN" && (
+          <Turn>
+            <Icon src="/icons/x-icon.svg" alt="x or o" />
+            <h4 className="turn">TURN</h4>
+          </Turn>
+        )}
         <RedoContainer>
           <Redo onClick={() => undoLast()}>
             <Icon src="/icons/redo-icon.svg" alt="undo last move" />

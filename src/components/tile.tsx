@@ -2,7 +2,7 @@ import { useContext } from "react";
 import styled from "styled-components";
 import { Context } from "../context/appContext";
 
-const Container = styled.div`
+const Container = styled.button`
   width: 30%;
   height: 100%;
   border-radius: 8px;
@@ -12,6 +12,7 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  border: none;
 `;
 const Choice = styled.img`
   width: 5rem;
