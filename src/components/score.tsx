@@ -42,7 +42,7 @@ function Score() {
         {gameConfig.against === "CPU" && (
           <>
             <ScoreTally background="#6ec1f5">
-              <Label>X(YOU)</Label>
+              <Label>(YOU)</Label>
               <Number>{score.playerWins}</Number>
             </ScoreTally>
             <ScoreTally background=" #f7f9f9">
@@ -50,7 +50,7 @@ function Score() {
               <Number>{score.ties}</Number>
             </ScoreTally>
             <ScoreTally background="#ee9f0c">
-              <Label>O(CPU)</Label>
+              <Label>(CPU)</Label>
               <Number>{score.cpuWins}</Number>
             </ScoreTally>
           </>

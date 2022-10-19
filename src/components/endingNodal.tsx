@@ -50,8 +50,12 @@ const WinnerIcon = styled.img`
   height: 5rem;
 `;
 
+type colorProps = {
+  textColor: string;
+};
+
 const WinOrDraw = styled.h2`
-  color: #6ec1f5;
+  color: ${({ textColor }: colorProps) => textColor};
   font-size: 35px;
 `;
 const ButtonsContainer = styled.div`
@@ -94,6 +98,16 @@ function EndingNodal() {
     }
   };
 
+  const getColor = () => {
+    let color = "white";
+    if (winner === xIcon) {
+      color = "#6ec1f5";
+    } else if (winner === oIcon) {
+      color = "#ee9f0c";
+    }
+    return color;
+  };
+
   return (
     <>
       <Nodal>
@@ -104,10 +118,10 @@ function EndingNodal() {
               {winner ? (
                 <>
                   <WinnerIcon src={winner} alt="X or O" />
-                  <WinOrDraw>TAKES THE ROUND</WinOrDraw>
+                  <WinOrDraw textColor={getColor()}>TAKES THE ROUND</WinOrDraw>
                 </>
               ) : (
-                <WinOrDraw>DRAW</WinOrDraw>
+                <WinOrDraw textColor={getColor()}>DRAW</WinOrDraw>
               )}
             </Winner>
             <ButtonsContainer>

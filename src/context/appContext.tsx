@@ -17,6 +17,7 @@ interface AppContext {
   endRound: () => void;
   xIcon: string;
   oIcon: string;
+  nextTurn: tile | undefined;
 }
 
 const Context = createContext<AppContext | null>(null);
@@ -40,32 +41,49 @@ function ContextProvider({ children }: contextProps) {
   const [gameMatrix, setGameMatrix] = useState(data);
   const [justPlayed, setJustPlayed] = useState(false);
   const [gameStack, setGameStack] = useState<play[]>([]);
-  const [score, setScore] = useState<score>({
-    playerWins: 0,
-    ties: 0,
-    cpuWins: 0,
-  });
-  // const getLocalStorage = () => {
-  //   const storedScore = localStorage.getItem("score");
-  //   if (storedScore) {
-  //     return JSON.parse(storedScore);
-  //   } else {
-  //     return {
-  //       playerWins: 0,
-  //       ties: 0,
-  //       cpuWins: 0,
-  //     };
-  //   }
-  // };
-  // const [score, setScore] = useState<score>(() => getLocalStorage());
-  // const stack = useLatest([]);
+  const getLocalStorage = (): score => {
+    const storedScore = localStorage.getItem("tic-tac-toe-score");
+    if (storedScore) {
+      return JSON.parse(storedScore);
+    }
+    return {
+      playerWins: 0,
+      ties: 0,
+      cpuWins: 0,
+    };
+  };
+  const [score, setScore] = useState<score>(() => getLocalStorage());
+  const [nextTurn, setNextTurn] = useState<tile>();
 
   const xIcon = "/icons/x-icon.svg";
   const oIcon = "/icons/O-icon.svg";
 
-  // useEffect(() => {
-  //   localStorage.setItem("score", JSON.stringify(score));
-  // }, [gameEnd]);
+  useEffect(() => {
+    if (gameConfig.against === "HUMAN") {
+      if (gameStack.length === 0) {
+        setNextTurn({
+          icon: xIcon,
+          value: "X",
+        });
+      } else if (gameStack.length > 0) {
+        if (nextTurn?.value === "X") {
+          setNextTurn({
+            icon: oIcon,
+            value: "O",
+          });
+        } else if (nextTurn?.value === "O") {
+          setNextTurn({
+            icon: xIcon,
+            value: "X",
+          });
+        }
+      }
+    }
+  }, [gameStack.length, gameConfig.against]);
+
+  useEffect(() => {
+    localStorage.setItem("tic-tac-toe-score", JSON.stringify(score));
+  }, [gameEnd]);
 
   useEffect(() => {
     if (gameConfig.player1 === "O" && gameConfig.against === "CPU") {
@@ -166,11 +184,7 @@ function ContextProvider({ children }: contextProps) {
   function cpuPlays(icon: string, value: string) {
     let { rowIndex, columnIndex } = getRandomIndex(3);
 
-    const ended = gameMatrix.every((row) =>
-      row.every((col) => col.value.length > 0),
-    );
-
-    const { winComb } = checkGameStatus();
+    const { winComb, ended } = checkGameStatus();
 
     if (!ended) {
       while (gameMatrix[rowIndex][columnIndex].icon.length !== 0) {
@@ -194,7 +208,7 @@ function ContextProvider({ children }: contextProps) {
       // setMatrix(rowIndex, columnIndex, value, icon);
       setTimeout(() => {
         setMatrix(rowIndex, columnIndex, value, icon);
-      }, 100);
+      }, 50);
     }
   }
 
@@ -359,6 +373,7 @@ function ContextProvider({ children }: contextProps) {
     endRound,
     xIcon,
     oIcon,
+    nextTurn,
   };
   return <Context.Provider value={values}>{children}</Context.Provider>;
 }

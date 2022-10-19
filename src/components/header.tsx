@@ -58,7 +58,7 @@ const Redo = styled.div`
 function Header() {
   const appContex = useContext(Context);
   if (!appContex) return null;
-  const { undoLast, gameConfig } = appContex;
+  const { undoLast, gameConfig, nextTurn } = appContex;
 
   return (
     <>
@@ -69,7 +69,7 @@ function Header() {
         </Logo>
         {gameConfig.against === "HUMAN" && (
           <Turn>
-            <Icon src="/icons/x-icon.svg" alt="x or o" />
+            <Icon src={nextTurn?.icon} alt="x or o" />
             <h4 className="turn">TURN</h4>
           </Turn>
         )}
