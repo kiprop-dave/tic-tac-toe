@@ -32,7 +32,7 @@ Users should be able to:
 
 ### Links
 
-- Live Site URL: [Add live site URL here](https://tic-tac-1unmxi8hd-kiprop-dave.vercel.app/)
+- Live Site: [here](https://tic-tac-1unmxi8hd-kiprop-dave.vercel.app/)
 
 ## My process
 
